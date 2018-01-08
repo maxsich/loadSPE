@@ -1,7 +1,7 @@
 function [ data, wavelengths, params ] = loadSPE( filename )
 %% LOADSPE load LightField SPE v3.0 or WinSpec SPE v2.x data from a file
 % [data, wavelengths, params] = loadSPE( filename )
-%
+
 %% *data*
 % If the file has only one ROI and one frame then data is a simple (2D) array.
 % If the file has one ROI but several frames then data is 3D array of
@@ -19,7 +19,7 @@ function [ data, wavelengths, params ] = loadSPE( filename )
 % number of frames. Then params.ROI will contain a struct with info on
 % sizes of ROIs and location on the full frame, which then can be
 % individually extracted. This may be added in the future releases
-%
+
 %% *params*
 % params.version contains version info of the file. For SPE v3.x the whole
 % XML footer is parsed as a struct in params.SpeFormat. 
@@ -42,14 +42,14 @@ function [ data, wavelengths, params ] = loadSPE( filename )
 % calibrations which are stored separately as params.xcalib and
 % params.ycalib. Full specification of the SPE v2.x header is avaliable at
 % <a href="matlab:web('ftp://ftp.piacton.com/Public/Manuals/Princeton%20Instruments/WinSpec%202.6%20Spectroscopy%20Software%20User%20Manual.pdf')">the PI website</a>.
-% 
-%% *wavelengths*
+
+%% wavelengths: 
 % For SPE v2.x is a single 1D array defined by either x-axis or y-axis
 % calibration, whichever is present in the file using the polynomial
 % method.
 % For SPE v3.x wavelegths is a 1D array is thereis a single ROI or a cell
 % array of 1D arrays corresponding to the different ROIs
-%
+
 %% Examples:
 % - 1 frame and 1 ROI per frame
 %   [ d, w, ~] = loadSPE( 'example.spe' );
@@ -67,14 +67,14 @@ function [ data, wavelengths, params ] = loadSPE( filename )
 %           % or could simply plot pixels imagesc( d.ROI{i}');
 %       end
 %   end
-%
+
 %% Copyright 
 % XML parsing is implemented using functions based on <a href="matlab:web('https://mathworks.com/matlabcentral/fileexchange/28518-xml2struct')">xml2struct</a>,
 % written by W. Falkena, modified by A. Wanner, I. Smirnov, X. Mo.
 % xml2struct (C) 2012, W. Falkena
 %
-% (C) 2017, M. Sich, The University of Sheffield
-% v2.0 30-12-2017
+% (C) 2018, M. Sich, The University of Sheffield
+% v2.1 08-01-2018
 
 %% Main code
 
@@ -180,6 +180,9 @@ if params.version >= 3
         % array
         x1 = str2num(params.SpeFormat.Calibrations.SensorMapping.Attributes.x);
         x2 = x1 + str2num(params.SpeFormat.Calibrations.SensorMapping.Attributes.width);
+        if x1 == 0
+            x1 = 1;
+        end
         wavelengths = w( x1:x2 );
     else
         % if there are several ROIs in the file then create cell array of
@@ -187,6 +190,9 @@ if params.version >= 3
         for i = 1 : nROI
             x1 = str2num(params.SpeFormat.Calibrations.SensorMapping{1,i}.Attributes.x);
             x2 = x1 - 1 + str2num(params.SpeFormat.Calibrations.SensorMapping{1,i}.Attributes.width);
+            if x1 == 0
+                x1 = 1;
+            end
             wavelengths{i} = w( x1:x2 );
         end
     end
