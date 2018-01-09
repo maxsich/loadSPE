@@ -73,8 +73,8 @@ function [ data, wavelengths, params ] = loadSPE( filename )
 % written by W. Falkena, modified by A. Wanner, I. Smirnov, X. Mo.
 % xml2struct (C) 2012, W. Falkena
 %
-% (C) 2017, M. Sich, The University of Sheffield
-% v2.2 09-01-2018
+% (C) 2018 M. Sich, The University of Sheffield
+% v2.3 09-01-2018
 
 %% Main code
 
@@ -174,21 +174,25 @@ if params.version >= 3
     end
     
     % export wavelengths data to a separate parameter
-    w = str2num(params.SpeFormat.Calibrations.WavelengthMapping.Wavelength.Text);
-    if nROI == 1
-        % if there is only one ROI then wavelengths should be a single 1D
-        % array
-        x1 = str2num(params.SpeFormat.Calibrations.SensorMapping.Attributes.x) + 1;
-        x2 = x1 + str2num(params.SpeFormat.Calibrations.SensorMapping.Attributes.width) - 1;
-        wavelengths = w( x1:x2 );
-    else
-        % if there are several ROIs in the file then create cell array of
-        % 1D arrays
-        for i = 1 : nROI
-            x1 = str2num(params.SpeFormat.Calibrations.SensorMapping{1,i}.Attributes.x) + 1;
-            x2 = x1 + str2num(params.SpeFormat.Calibrations.SensorMapping{1,i}.Attributes.width) - 1;
-            wavelengths{i} = w( x1:x2 );
+    if exist('params.SpeFormat.Calibrations.WavelengthMapping', 'var')
+        w = str2num(params.SpeFormat.Calibrations.WavelengthMapping.Wavelength.Text);
+        if nROI == 1
+            % if there is only one ROI then wavelengths should be a single 1D
+            % array
+            x1 = str2num(params.SpeFormat.Calibrations.SensorMapping.Attributes.x) + 1;
+            x2 = x1 + str2num(params.SpeFormat.Calibrations.SensorMapping.Attributes.width) - 1;
+            wavelengths = w( x1:x2 );
+        else
+            % if there are several ROIs in the file then create cell array of
+            % 1D arrays
+            for i = 1 : nROI
+                x1 = str2num(params.SpeFormat.Calibrations.SensorMapping{1,i}.Attributes.x) + 1;
+                x2 = x1 + str2num(params.SpeFormat.Calibrations.SensorMapping{1,i}.Attributes.width) - 1;
+                wavelengths{i} = w( x1:x2 );
+            end
         end
+    else
+        wavelengths = [];
     end
     
 elseif params.version >= 2
