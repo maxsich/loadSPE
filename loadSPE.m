@@ -74,7 +74,7 @@ function [ data, wavelengths, params ] = loadSPE( filename )
 % xml2struct (C) 2012, W. Falkena
 %
 % (C) 2018 M. Sich, The University of Sheffield
-% v2.4 17-01-2018
+% v2.5 17-01-2018
 
 %% Main code
 
@@ -111,9 +111,9 @@ if params.version >= 3
         % Fallback to standard xmlread usage, using a temporary XML file:
         % Store the XML data in a temp *.xml file
         filename = [tempname '.xml'];
-        fid = fopen(filename,'Wt');
-        fwrite(fid,xmlString);
-        fclose(fid);
+        fid2 = fopen(filename,'Wt');
+        fwrite(fid2,XMLFooter);
+        fclose(fid2);
         % Read the file into an XML model object
         xmlTreeObject = xmlread(filename);
         % Delete the temp file
