@@ -74,7 +74,7 @@ function [ data, wavelengths, params ] = loadSPE( filename )
 % xml2struct (C) 2012, W. Falkena
 %
 % (C) 2018 M. Sich, The University of Sheffield
-% v2.3 09-01-2018
+% v2.4 17-01-2018
 
 %% Main code
 
@@ -174,7 +174,7 @@ if params.version >= 3
     end
     
     % export wavelengths data to a separate parameter
-    if exist('params.SpeFormat.Calibrations.WavelengthMapping', 'var')
+    if isfield(params.SpeFormat.Calibrations, 'WavelengthMapping')
         w = str2num(params.SpeFormat.Calibrations.WavelengthMapping.Wavelength.Text);
         if nROI == 1
             % if there is only one ROI then wavelengths should be a single 1D
