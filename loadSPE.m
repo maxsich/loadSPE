@@ -74,7 +74,7 @@ function [ data, wavelengths, params ] = loadSPE( filename )
 % xml2struct (C) 2012, W. Falkena
 %
 % (C) 2018 M. Sich, The University of Sheffield
-% v2.5 17-01-2018
+% v2.6 25-01-2018
 
 %% Main code
 
@@ -147,12 +147,12 @@ if params.version >= 3
         if nFrames == 1
             height = str2num( db.DataBlock.Attributes.height );
             width = str2num( db.DataBlock.Attributes.width );
-            data = fread( fid, [ height, width ], strDataType );
+            data = fread( fid, [ width, height ], strDataType );
         else
             for j = 1 : nFrames
                 height = str2num( db.DataBlock.Attributes.height );
                 width = str2num( db.DataBlock.Attributes.width );
-                data( :, :, j ) = fread( fid, [ height, width ], strDataType );
+                data( :, :, j ) = fread( fid, [ width, height ], strDataType );
             end
         end
     else
@@ -160,14 +160,14 @@ if params.version >= 3
             for i = 1 : nROI
                 height = str2num( db.DataBlock{1,i}.Attributes.height );
                 width = str2num( db.DataBlock{1,i}.Attributes.width );
-                data.ROI{i}(:, :) = fread( fid, [ height, width ], strDataType );
+                data.ROI{i}(:, :) = fread( fid, [ width, height ], strDataType );
             end
         else
             for i = 1 : nROI
                 for j = 1 : nFrames
                     height = str2num( db.DataBlock{1,i}.Attributes.height );
                     width = str2num( db.DataBlock{1,i}.Attributes.width );
-                    data(j).ROI{i}(:, :) = fread( fid, [ height, width ], strDataType );
+                    data(j).ROI{i}(:, :) = fread( fid, [ width, height ], strDataType );
                 end
             end
         end
