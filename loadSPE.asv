@@ -74,7 +74,7 @@ function [ data, wavelengths, params ] = loadSPE( filename )
 % xml2struct (C) 2012, W. Falkena
 %
 % (C) 2018 M. Sich, The University of Sheffield
-% v2.7 27-03-2018
+% v2.6 25-01-2018
 
 %% Main code
 
@@ -95,17 +95,8 @@ if params.version >= 3
     % Read the footer encoded in int8
     XMLFooter = fread( fid, Inf, 'int8' );
     % Find any invalid XML characters and replace them with blank spaces
-    XMLFooter( (XMLFooter<=hex2dec('8')) | (XMLFooter==hex2dec('B')) |...
-         (XMLFooter==hex2dec('C')) |...
-         (XMLFooter>=hex2dec('E') & XMLFooter<=hex2dec('1F')) |...
-         (XMLFooter>=hex2dec('7F') & XMLFooter<=hex2dec('84')) |...
-         (XMLFooter>=hex2dec('86') & XMLFooter<=hex2dec('9F')) |...
-         (XMLFooter>=hex2dec('D800') & XMLFooter<=hex2dec('DFFF')) |...
-         (XMLFooter>=hex2dec('FDD0') & XMLFooter<=hex2dec('FDEF')) |...
-         (XMLFooter>=hex2dec('FFFE') & XMLFooter<=hex2dec('FFFF')) ) = 32;
-    
-    % Convert this array of integers to a string
-    XMLFooter = join( string( char(XMLFooter)), '');
+    XMLFooter( (XMLFooter<=hex2dec(8)) || (XMLFooter==hex2dec(b)) ||...
+        (XMLFooter==hex2dec()) ) = 
     
     % try to parse the xml string
     % more info https://undocumentedmatlab.com/blog/parsing-xml-strings
